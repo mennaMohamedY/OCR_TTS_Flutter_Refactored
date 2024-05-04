@@ -7,7 +7,9 @@ A new Flutter project.
  innovative solution that combines the power of text recognition with speech synthesis to deliver an immersive and accessible user experience. it leverages ML to accurately recognize text from images and seamlessly convert it into natural-sounding speech
 
 
-https://github.com/mennaMohamedY/OCR_TTS_Flutter_Refactored/assets/62669827/1829d2d5-424f-4fea-94c2-fca06e41ba7c
+
+
+https://github.com/mennaMohamedY/OCR_TTS_Flutter_Refactored/assets/62669827/243eac7e-1f4c-4cdd-8395-0fe2d0611f1c
 
 
 
