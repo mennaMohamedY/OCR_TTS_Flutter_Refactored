@@ -4,7 +4,6 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
  innovative solution that combines the power of text recognition with speech synthesis to deliver an immersive and accessible user experience. it leverages ML to accurately recognize text from images and seamlessly convert it into natural-sounding speech
 
 
