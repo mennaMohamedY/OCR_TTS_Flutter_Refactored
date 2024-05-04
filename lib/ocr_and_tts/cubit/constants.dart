@@ -5,8 +5,8 @@ class Constants{
       " the importance of being decplined ensuring my work to a high standard "
       "and supporting my fellow students";
 
-  static String tts_input2="hi";
-      // "This Screen is Designed and implmented by Menna Yousef using flutter , "
-      // "you can scan any image and i will read the text for you"
-      // "\n before we start don't forget i'm looking for your feedback ";
+  static String tts_input2=
+      "This Screen is Designed and implmented by Menna Yousef using flutter , "
+      "you can scan any image and i will read the text for you"
+      "\n before we start don't forget i'm looking for your feedback ";
 }

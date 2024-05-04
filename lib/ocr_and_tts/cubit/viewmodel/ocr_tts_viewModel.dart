@@ -20,6 +20,7 @@ class OCRTTSViewModel extends Cubit<OCRTTSStates>{
   bool repeat=true;
   double opacity=0;
   List<Map> voicesList=[];
+  var flag=0;
 
   bool isFirst= true;
   bool isFirstBtn=true;
@@ -74,10 +75,16 @@ class OCRTTSViewModel extends Cubit<OCRTTSStates>{
             children: [
               IconButton(onPressed: ()async {
                 File? temp=await ImageFunctions.cameraPicker();
+                currentWordStart=null;
+                currentWordEnd=null;
+                ///here
+                //isFirst=true;
                 if(temp !=null){
                   pickedImage=temp;
                   count=0;
-                  initTTS();
+                  flag=0;
+
+                  //initTTS();
                 }
                 print("Current state is .................................> OCRTTSRELOAdScreenState first stage ii");
                 emit(OCRTTSRELOAdScreenState());
@@ -88,10 +95,13 @@ class OCRTTSViewModel extends Cubit<OCRTTSStates>{
             children: [
               IconButton(onPressed: ()async {
                 File? temp=await ImageFunctions.galleryPicker();
+                currentWordStart=null;
+                currentWordEnd=null;
                 if(temp !=null){
                   pickedImage=temp;
                   count=0;
-                  initTTS();
+                  flag=0;
+                  //initTTS();
                 }
                 print("Current state is .................................> OCRTTSRELOAdScreenState first stage ii");
                 emit(OCRTTSRELOAdScreenState());
@@ -124,10 +134,11 @@ class OCRTTSViewModel extends Cubit<OCRTTSStates>{
 
   //on Chosing image from gallery or from camera part
 
-  void extractText(File file,context)async {
+  void extractText(File file)async {
     final textRecoginizer=TextRecognizer(script: TextRecognitionScript.latin);
     final InputImage inputImage=InputImage.fromFile(file);
     print("Current state is .................................> TextRecoginizedFromImageLoadingState second stage ii");
+    isFirst=true;
     emit(TextRecoginizedFromImageLoadingState());
     try{
       final RecognizedText recognizedText=await textRecoginizer.processImage(inputImage);
@@ -142,29 +153,51 @@ class OCRTTSViewModel extends Cubit<OCRTTSStates>{
         var n=spokenText.split(" ");
         print("----------> ${n.length}");
         // _Tts.speak(spokenText);
+        ///here2
         isFirst=true;
+        flag=1;
         //emit(MakeWomanStopTakingState());
         //emit(TextRecoginizedFromImageSuccessState());
         if(count<=n.length && spokenText.length !=0){
           flutterTts.speak(spokenText);
-          isFirst=false;
           flutterTts.setProgressHandler((text, start, end, word) {
             currentWordStart=start;
             currentWordEnd=end;
             print("the endd 2${end}");
             count+=1;
+            flutterTts.awaitSpeakCompletion(true);
+            flutterTts.setCompletionHandler(() {
+              print("OnCompleteeeeeeeeHandler-------------->true");
+              // flag=0;
+              isFirst=true;
+              emit(TextRecoginizedFromImageSuccessState());
+
+              //isFirstWidget=false;
+             // print(object)
+             // emit(OCRTTSRELOAdScreenState());
+            });
             print("Current state is .................................> TextRecoginizedFromImageLoadingState second stage ii");
+            isFirst=false;
             emit(TextRecoginizedFromImageSuccessState());
 
           });
-        }
-        else{
+
+
+
+        }else if(spokenText.length ==0){
+          isFirst=true;
           emit(NoTextInImageState(ErrorMsg: "There is No Text in the image "));
         }
+        // else if(count>n.length){
+        //   isFirst=true;
+        //   emit(OCRTTSRELOAdScreenState());
+        //
+        // }
         print("Current state is .................................> TextRecoginizedFromImageLoadingState second stage ii");
         //emit(TextRecoginizedFromImageSuccessState());
       }
       else{
+        isFirst=true;
         print("Current state is .................................> CoudntRecognizeTextFromImageState second stage iii");
         emit(CoudntRecognizeTextFromImageState( ErrorMsg: "Text Is Null"));
       }
