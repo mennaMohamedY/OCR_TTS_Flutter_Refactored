@@ -17,7 +17,7 @@ class TextRecoginitionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return BlocBuilder<OCRTTSViewModel,OCRTTSStates>(
-      bloc: _ocrttsViewModel..extractText(file,context),
+      bloc: _ocrttsViewModel..extractText(file),
         builder: (context,state){
         print("widet screen is built");
           return  Padding(padding:EdgeInsets.symmetric(vertical: 22,horizontal: 26),

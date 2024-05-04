@@ -43,6 +43,10 @@ class _CompineOCRTTSScreenState extends State<CompineOCRTTSScreen> {
       bloc: _ocrttsViewModel,
         builder: (context,state){
         print("Screen rebuilt---------------------");
+        if(_ocrttsViewModel.pickedImage !=null && _ocrttsViewModel.flag==0){
+          _ocrttsViewModel.extractText(_ocrttsViewModel.pickedImage!);
+
+        }
         return
         Scaffold(appBar: AppBar(),body: SafeArea(
           child: Center(
@@ -71,6 +75,7 @@ class _CompineOCRTTSScreenState extends State<CompineOCRTTSScreen> {
                           text: TextSpan(
                             style: TextStyle(fontWeight: FontWeight.w500,fontSize: 24,color: Colors.black),
                             children: <TextSpan>[
+                              //if(_ocrttsViewModel.spokenText !=null && _ocrttsViewModel.currentWordStart !=null)
                               TextSpan(text: _ocrttsViewModel.spokenText.substring(0,_ocrttsViewModel.currentWordStart)),
                               if(_ocrttsViewModel.currentWordStart !=null)
                                 TextSpan(text: _ocrttsViewModel.spokenText.substring(_ocrttsViewModel.currentWordStart!,_ocrttsViewModel.currentWordEnd),style: TextStyle(color: Colors.white,backgroundColor: Colors.pinkAccent)),
@@ -87,7 +92,34 @@ class _CompineOCRTTSScreenState extends State<CompineOCRTTSScreen> {
                               child: (_ocrttsViewModel.pickedImage==null)?Text("Choose an image first for text recogintion"):Image.file(_ocrttsViewModel.pickedImage!)),
                         ),
                         (_ocrttsViewModel.pickedImage == null)?Text("No Images Picked yet!"):
-                        TextRecoginitionWidget(file: _ocrttsViewModel.pickedImage!,)
+                            //start of text recoginition
+                        Padding(padding:EdgeInsets.symmetric(vertical: 22,horizontal: 26),
+                            child:
+                            (state is TextRecoginizedFromImageLoadingState)?
+                            CircularProgressIndicator():
+                            (state is TextRecoginizedFromImageSuccessState)?
+                            RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(fontWeight: FontWeight.w500,fontSize: 24,color: Colors.black),
+                                  children: <TextSpan>[
+                                    TextSpan(text: _ocrttsViewModel.spokenText.substring(0,_ocrttsViewModel.currentWordStart)),
+                                    if(_ocrttsViewModel.currentWordStart !=null)
+                                      TextSpan(text: _ocrttsViewModel.spokenText.substring(_ocrttsViewModel.currentWordStart!,_ocrttsViewModel.currentWordEnd),style: TextStyle(color: Colors.white,backgroundColor: Colors.pinkAccent)),
+                                    if(_ocrttsViewModel.currentWordEnd !=null)
+                                      TextSpan(text: _ocrttsViewModel.spokenText.substring(_ocrttsViewModel.currentWordEnd!)),
+
+                                  ],)):
+                            (state is CoudntRecognizeTextFromImageState)?
+                            Text("Error ${state.ErrorMsg}"):
+                            (state is UnExpectedErrorOccuredWhileRecoginizingTextState)?
+                            Text("Error ${state.ErrorMsg}"):
+                            (state is NoTextInImageState)?
+                            Text("${state.ErrorMsg}"):
+                            //unreachable condition
+                            SizedBox()
+                        )
+                        // end of text recoginition
                       ],),
                     ),
                     crossFadeState: _ocrttsViewModel.isFirstWidget? CrossFadeState.showFirst: CrossFadeState.showSecond,
